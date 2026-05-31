@@ -1,0 +1,15 @@
+<router-outlet></router-outlet>
+
+<!-- Toast Biometric System Notifications overlay -->
+<div class="toast-container">
+  @for (toast of toastService.toasts(); track toast.id) {
+    <div class="toast toast-{{ toast.type }}">
+      <span class="toast-indicator">
+        @if (toast.type === 'success') { ✓ }
+        @else if (toast.type === 'error') { ✕ }
+        @else { ⚠️ }
+      </span>
+      <span class="toast-text">{{ toast.message }}</span>
+    </div>
+  }
+</div>

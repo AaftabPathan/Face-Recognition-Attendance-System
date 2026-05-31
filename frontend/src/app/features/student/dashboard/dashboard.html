@@ -1,0 +1,84 @@
+<div class="layout-wrapper">
+  <app-sidebar></app-sidebar>
+
+  <main class="main-content">
+    <app-navbar></app-navbar>
+
+    <div class="glass-card page-action-header border-teal">
+      <div class="header-titles">
+        <h2 class="page-title">🏫 Student Attendance Overview</h2>
+        <p class="page-subtitle">Inspect your subject-wise biometric attendance logs and averages</p>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <div class="spinner-wrapper">
+        <div class="spinner"></div>
+      </div>
+    } @else {
+      <!-- Core Cards Grid -->
+      <div class="analytics-grid">
+        <!-- Average Rate -->
+        <div class="glass-card stat-card border-purple">
+          <div class="stat-header">
+            <span class="stat-icon">📈</span>
+            <span class="stat-label">Average Attendance Rate</span>
+          </div>
+          <div class="stat-value">{{ overallRate() }}%</div>
+          <p class="stat-trend {{ overallRate() >= 75 ? 'trend-up' : 'text-red' }}">
+            {{ overallRate() >= 75 ? '✓ Safe Zone (Above 75%)' : '⚠️ Shortage Warning (Below 75%)' }}
+          </p>
+        </div>
+
+        <!-- Attended Classes -->
+        <div class="glass-card stat-card border-teal">
+          <div class="stat-header">
+            <span class="stat-icon">✓</span>
+            <span class="stat-label">Attended Lectures</span>
+          </div>
+          <div class="stat-value">{{ classesAttended() }}</div>
+          <p class="stat-trend">Classes physically verified</p>
+        </div>
+
+        <!-- Total Classes -->
+        <div class="glass-card stat-card border-orange">
+          <div class="stat-header">
+            <span class="stat-icon">📅</span>
+            <span class="stat-label">Total Conducted Lectures</span>
+          </div>
+          <div class="stat-value">{{ classesTotal() }}</div>
+          <p class="stat-trend">Total semester session history</p>
+        </div>
+      </div>
+
+      <!-- Subjects detailed progress -->
+      <h3 class="panel-section-title">📖 Detailed Subject Attendance Progress</h3>
+      
+      <div class="student-subjects-list-grid">
+        @for (sub of subjectOverview(); track sub.subjectId) {
+          <div class="glass-card subject-progress-card">
+            <div class="card-header-row">
+              <div class="sub-meta">
+                <h4 class="sub-name">{{ sub.subjectName }}</h4>
+                <span class="sub-code">{{ sub.subjectCode }}</span>
+              </div>
+              <div class="sub-rate-pill {{ sub.attendanceRate >= 75 ? 'bg-green-pill' : 'bg-red-pill' }}">
+                {{ sub.attendanceRate }}%
+              </div>
+            </div>
+
+            <div class="card-progress-bar-group">
+              <div class="progress-bar-row">
+                <span class="prog-label">Attended: {{ sub.attendedClasses }} / {{ sub.totalClasses }} lectures</span>
+              </div>
+              <div class="progress-bar-track">
+                <div class="progress-bar-fill {{ sub.attendanceRate >= 75 ? 'fill-green' : 'fill-red' }}" 
+                     [style.width.%]="sub.attendanceRate"></div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

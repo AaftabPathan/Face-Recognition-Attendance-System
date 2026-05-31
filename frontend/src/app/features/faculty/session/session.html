@@ -1,0 +1,138 @@
+<div class="layout-wrapper">
+  <app-sidebar></app-sidebar>
+
+  <main class="main-content">
+    <app-navbar></app-navbar>
+
+    <div class="glass-card page-action-header border-orange">
+      <div class="header-titles">
+        <h2 class="page-title">📹 Live Biometric Attendance Room</h2>
+        <p class="page-subtitle">Launch webcam and perform AI facial landmark scanning for your class</p>
+      </div>
+    </div>
+
+    <!-- Active Grid Layout -->
+    <div class="session-main-grid">
+      <!-- Left side panel: Session config/Status -->
+      <div class="glass-card controls-card">
+        @if (!activeSessionId()) {
+          <h3 class="card-section-title">⚙️ Class Scheduling</h3>
+          <p class="card-section-subtitle">Define the parameters to initialize biometric scanning</p>
+
+          <div class="form-group">
+            <label for="subjectSelect" class="form-label">Active Subject Class</label>
+            <select id="subjectSelect" [(ngModel)]="selectedSubjectId" class="form-input">
+              <option value="" disabled selected>Select Subject</option>
+              @for (sub of subjects(); track sub.id) {
+                <option [value]="sub.id">{{ sub.name }} ({{ sub.code }})</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="durationMinutes" class="form-label">Session Capture Duration</label>
+            <select id="durationMinutes" [(ngModel)]="sessionDuration" class="form-input">
+              <option [value]="15">15 Minutes</option>
+              <option [value]="30">30 Minutes</option>
+              <option [value]="60">60 Minutes</option>
+              <option [value]="120">120 Minutes</option>
+            </select>
+          </div>
+
+          <button (click)="startBiometricSession()" [disabled]="modelsLoading()" class="btn-primary launch-session-btn">
+            @if (modelsLoading()) {
+              <span class="spinner-small"></span> Mapping Models...
+            } @else {
+              Launch Biometric Scanner 📹
+            }
+          </button>
+        } @else {
+          <!-- Active scan status indicators -->
+          <div class="active-session-status-card">
+            <div class="status-indicator">
+              <span class="status-glow-dot"></span>
+              <span class="status-lbl-text">Biometric Scanning Room Online</span>
+            </div>
+
+            <div class="session-metadata-block">
+              <div class="meta-row">
+                <span class="meta-label">Subject:</span>
+                <span class="meta-value">{{ activeSessionDetails()?.qrCodeToken }}</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">Session Boundaries:</span>
+                <span class="meta-value text-orange">
+                  {{ activeSessionDetails()?.startTime }} - {{ activeSessionDetails()?.endTime }}
+                </span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">Backup QR Token:</span>
+                <span class="meta-value code-font">{{ activeSessionDetails()?.qrCodeToken }}</span>
+              </div>
+            </div>
+
+            <!-- Conclude button -->
+            <button (click)="stopSession()" class="btn-primary conclude-session-btn">
+              Conclude Attendance Session 🟥
+            </button>
+          </div>
+        }
+      </div>
+
+      <!-- Center: Video Viewport Scanner -->
+      <div class="glass-card scanner-card">
+        <h3 class="card-section-title">🎥 Live Biometric Stream</h3>
+        <p class="card-section-subtitle"> вебкам feed processed locally via face-api.js at 30+ FPS</p>
+
+        <div class="session-webcam-placeholder">
+          @if (!webcamActive()) {
+            <div class="standby-webcam-layout">
+              <span class="laser-radar-icon">📡</span>
+              <p class="standby-title">biometric scanner offline</p>
+              <p class="standby-subtitle">Configure session parameters and launch system scanner to begin live facial mapping.</p>
+            </div>
+          }
+
+          <div class="camera-frame-wrapper" [style.display]="webcamActive() ? 'block' : 'none'">
+            <video #videoElement class="camera-video" autoplay playsinline></video>
+            <canvas #canvasElement width="640" height="480" class="camera-overlay"></canvas>
+            @if (scanning()) {
+              <div class="scan-glow"></div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Real-time Live Roster -->
+      <div class="glass-card roster-card">
+        <h3 class="card-section-title">🟢 Real-Time Attendance Roster</h3>
+        <p class="card-section-subtitle">Attendance list updates immediately upon biometric validation</p>
+
+        <div class="roster-list-wrapper">
+          @if (markedRoster().length === 0) {
+            <div class="empty-roster-box">
+              <span class="empty-roster-icon">⏳</span>
+              <p class="empty-roster-title">Roster Standby</p>
+              <p class="empty-roster-subtitle">No student biometrics processed yet. Student logs appear once identified.</p>
+            </div>
+          } @else {
+            <div class="roster-scroll-box">
+              @for (item of markedRoster(); track item.attendance_id) {
+                <div class="roster-student-item">
+                  <div class="roster-item-header">
+                    <span class="roster-name">{{ item.first_name }} {{ item.last_name }}</span>
+                    <span class="badge badge-present roster-badge">Present</span>
+                  </div>
+                  <div class="roster-item-footer">
+                    <span class="roster-roll">{{ item.roll_number }}</span>
+                    <span class="roster-time">🕒 {{ item.timestamp.slice(11, 16) }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

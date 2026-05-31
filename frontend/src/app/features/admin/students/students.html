@@ -1,0 +1,125 @@
+<div class="layout-wrapper">
+  <app-sidebar></app-sidebar>
+
+  <main class="main-content">
+    <app-navbar></app-navbar>
+
+    <!-- Header Actions Panel -->
+    <div class="glass-card page-action-header">
+      <div class="header-titles">
+        <h2 class="page-title">👨‍🎓 Student Registry Management</h2>
+        <p class="page-subtitle">View, edit, or purge biometric student accounts</p>
+      </div>
+
+      <div class="header-controls">
+        <!-- Search bar -->
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="text" 
+            [(ngModel)]="searchQuery" 
+            placeholder="Search by name, roll, or department..." 
+            class="form-input search-box-input">
+        </div>
+
+        <a routerLink="/admin/face-registration" class="btn-primary">
+          Register Face Biometrics 📷
+        </a>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <div class="spinner-wrapper">
+        <div class="spinner"></div>
+      </div>
+    } @else {
+      <!-- Tabular Records List -->
+      <div class="glass-card table-wrapper">
+        @if (filteredStudents().length === 0) {
+          <div class="no-records-box">
+            <span class="no-records-icon">📭</span>
+            <h3 class="no-records-title">No student profiles found</h3>
+            <p class="no-records-subtitle">Adjust your search parameters or register a new profile.</p>
+          </div>
+        } @else {
+          <div class="custom-table-container">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Student Thumbnail</th>
+                  <th>Full Name</th>
+                  <th>Roll Number</th>
+                  <th>Department & Course</th>
+                  <th>Biometric ID Status</th>
+                  <th>Admin Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (student of filteredStudents(); track student.id) {
+                  <tr>
+                    <!-- Profile Photo -->
+                    <td>
+                      <div class="table-avatar-box">
+                        @if (student.photo_url) {
+                          <img [src]="'http://localhost:3000' + student.photo_url" class="table-avatar-img" alt="Profile">
+                        } @else {
+                          <div class="table-avatar-fallback">
+                            {{ student.first_name.substring(0, 1) }}{{ student.last_name.substring(0, 1) }}
+                          </div>
+                        }
+                      </div>
+                    </td>
+
+                    <!-- Name -->
+                    <td>
+                      <div class="student-name-block">
+                        <span class="student-fullname-val">{{ student.first_name }} {{ student.last_name }}</span>
+                        <span class="student-email-val">{{ student.email }}</span>
+                      </div>
+                    </td>
+
+                    <!-- Roll -->
+                    <td>
+                      <span class="roll-badge">{{ student.roll_number }}</span>
+                    </td>
+
+                    <!-- Department -->
+                    <td>
+                      <div class="student-dept-block">
+                        <span class="dept-text-val">{{ student.department_name }}</span>
+                        <span class="course-text-val">{{ student.course_name }}</span>
+                      </div>
+                    </td>
+
+                    <!-- Status -->
+                    <td>
+                      @if (student.photo_url) {
+                        <span class="badge badge-present">✓ Enrolled</span>
+                      } @else {
+                        <span class="badge badge-absent">❌ Missing Face</span>
+                      }
+                    </td>
+
+                    <!-- Actions -->
+                    <td>
+                      <div class="actions-group-cell">
+                        <!-- Redirect directly to face capturing with this student's ID prefilled -->
+                        <a [routerLink]="['/admin/face-registration']" [queryParams]="{ studentId: student.id }" 
+                           class="action-btn icon-cam" title="Enroll Facial Templates">
+                          📷
+                        </a>
+                        <button (click)="deleteStudent(student.id)" class="action-btn icon-del" title="Delete Profile">
+                          🗑️
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

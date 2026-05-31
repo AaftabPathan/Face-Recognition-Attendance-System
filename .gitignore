@@ -1,0 +1,24 @@
+# Dependency directories
+**/node_modules/
+
+# Local environment files
+.env
+backend/.env
+
+# Backend uploads (keep directory structures but ignore images)
+backend/uploads/students/*
+!backend/uploads/students/.gitkeep
+
+# Angular builds and caches
+frontend/.angular/
+frontend/dist/
+frontend/tmp/
+frontend/out-tsc/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

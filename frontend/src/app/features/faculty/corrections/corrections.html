@@ -1,0 +1,84 @@
+<div class="layout-wrapper">
+  <app-sidebar></app-sidebar>
+
+  <main class="main-content">
+    <app-navbar></app-navbar>
+
+    <div class="glass-card page-action-header border-purple">
+      <div class="header-titles">
+        <h2 class="page-title">📝 Student Attendance Adjustments</h2>
+        <p class="page-subtitle">Review, approve, or reject manual attendance correction submissions</p>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <div class="spinner-wrapper">
+        <div class="spinner"></div>
+      </div>
+    } @else {
+      <div class="glass-card table-wrapper">
+        @if (corrections().length === 0) {
+          <div class="no-records-box">
+            <span class="no-records-icon">📬</span>
+            <h3 class="no-records-title">All caught up!</h3>
+            <p class="no-records-subtitle">No pending attendance correction requests remain.</p>
+          </div>
+        } @else {
+          <div class="custom-table-container">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Student Info</th>
+                  <th>Class Subject</th>
+                  <th>Class Date</th>
+                  <th>Student Explanation</th>
+                  <th>Verification Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (c of corrections(); track c.id) {
+                  <tr>
+                    <!-- Student -->
+                    <td>
+                      <div class="student-name-block">
+                        <span class="student-fullname-val">{{ c.first_name }} {{ c.last_name }}</span>
+                        <span class="student-email-val">{{ c.roll_number }}</span>
+                      </div>
+                    </td>
+
+                    <!-- Subject -->
+                    <td>
+                      <span class="dept-text-val">{{ c.subject_name }}</span>
+                    </td>
+
+                    <!-- Date -->
+                    <td>
+                      <span class="roll-badge">{{ c.date.slice(0, 10) }}</span>
+                    </td>
+
+                    <!-- Reason -->
+                    <td>
+                      <p class="student-reason-text">"{{ c.reason }}"</p>
+                    </td>
+
+                    <!-- Actions -->
+                    <td>
+                      <div class="actions-group-cell">
+                        <button (click)="approveCorrection(c.id)" class="action-btn icon-cam" title="Approve Request">
+                          🟢
+                        </button>
+                        <button (click)="rejectCorrection(c.id)" class="action-btn icon-del" title="Reject Request">
+                          🔴
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

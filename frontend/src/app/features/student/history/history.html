@@ -1,0 +1,131 @@
+<div class="layout-wrapper">
+  <app-sidebar></app-sidebar>
+
+  <main class="main-content">
+    <app-navbar></app-navbar>
+
+    <div class="glass-card page-action-header border-purple">
+      <div class="header-titles">
+        <h2 class="page-title">📅 Biometric Attendance History</h2>
+        <p class="page-subtitle">Inspect your chronological logs, verification scores, and file correction claims</p>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <div class="spinner-wrapper">
+        <div class="spinner"></div>
+      </div>
+    } @else {
+      <div class="glass-card table-wrapper">
+        @if (logs().length === 0) {
+          <div class="no-records-box">
+            <span class="no-records-icon">📭</span>
+            <h3 class="no-records-title">No attendance history available</h3>
+            <p class="no-records-subtitle">Biometric history appears once scanned by an instructor.</p>
+          </div>
+        } @else {
+          <div class="custom-table-container">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Class Date</th>
+                  <th>Subject Class</th>
+                  <th>Class Code</th>
+                  <th>Arrival Time</th>
+                  <th>Verification Method</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (log of logs(); track log.attendance_id) {
+                  <tr>
+                    <!-- Date -->
+                    <td>
+                      <span class="dept-text-val">{{ log.date.slice(0, 10) }}</span>
+                    </td>
+
+                    <!-- Subject -->
+                    <td>
+                      <span class="student-fullname-val">{{ log.subject_name }}</span>
+                    </td>
+
+                    <!-- Code -->
+                    <td>
+                      <span class="roll-badge">{{ log.subject_code }}</span>
+                    </td>
+
+                    <!-- Time -->
+                    <td>
+                      <span class="dept-text-val">🕒 {{ log.timestamp ? log.timestamp.slice(11, 16) : 'N/A' }}</span>
+                    </td>
+
+                    <!-- Method -->
+                    <td>
+                      <span class="badge {{ log.marked_by === 'face_recognition' ? 'badge-present' : 'badge-late' }}">
+                        {{ log.marked_by }}
+                      </span>
+                    </td>
+
+                    <!-- Status -->
+                    <td>
+                      <span class="badge {{ log.status === 'present' ? 'badge-present' : (log.status === 'late' ? 'badge-late' : 'badge-absent') }}">
+                        {{ log.status }}
+                      </span>
+                    </td>
+
+                    <!-- Action -->
+                    <td>
+                      @if (log.status === 'absent') {
+                        <button (click)="openCorrectionModal(log.attendance_id)" class="action-btn icon-cam" title="Request Correction">
+                          📝
+                        </button>
+                      } @else {
+                        <span class="text-muted">—</span>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- In-Line Correction Modal Overlay (Visual Wow Factor) -->
+    @if (showModal()) {
+      <div class="modal-overlay">
+        <div class="modal-content glass-card">
+          <div class="modal-header">
+            <h3 class="modal-title">📝 File Adjustment Claim</h3>
+            <button (click)="closeModal()" class="btn-close-modal">✕</button>
+          </div>
+          
+          <form (submit)="submitCorrection($event)" class="modal-form">
+            <p class="modal-description">
+              Describe your physical presence during this class. Your lecturer will review this request.
+            </p>
+
+            <div class="form-group">
+              <label for="correctionReason" class="form-label">Explanation Reason</label>
+              <textarea 
+                id="correctionReason" 
+                name="correctionReason" 
+                [(ngModel)]="correctionReason" 
+                rows="4" 
+                placeholder="e.g. System failed to register my face due to dark classroom lighting, but I was physically present."
+                class="form-input text-area-input" 
+                required></textarea>
+            </div>
+
+            <div class="modal-actions-row">
+              <button type="button" (click)="closeModal()" class="btn-secondary modal-btn">Cancel</button>
+              <button type="submit" class="btn-primary modal-btn">Submit Request</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    }
+  </main>
+</div>

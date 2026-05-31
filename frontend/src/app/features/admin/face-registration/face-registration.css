@@ -1,0 +1,169 @@
+@import "../../admin/students/students.css";
+
+.registration-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 992px) {
+  .registration-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel-title {
+  font-size: 18px;
+  color: var(--text-primary);
+}
+
+.panel-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  margin-bottom: 24px;
+}
+
+.config-profile-card {
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+}
+
+.select-student-group {
+  margin-bottom: 32px;
+}
+
+.status-feedback-box {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 24px;
+}
+
+.feedback-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.progress-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progress-bar-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.progress-track-wide {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.progress-fill-wide {
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b, #10b981);
+  border-radius: 6px;
+  width: 0%;
+  transition: width 0.4s ease-out;
+}
+
+.progress-percentage-text {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--secondary);
+  text-align: right;
+  margin-top: 2px;
+}
+
+.thumbnail-preview-box {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.preview-title {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.preview-img-frame {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid #10b981;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.controls-row {
+  display: flex;
+  gap: 12px;
+}
+
+.start-cam-btn, .stop-cam-btn, .save-btn {
+  flex: 1;
+  height: 48px;
+}
+
+.webcam-scanner-viewport {
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+}
+
+.camera-panel-frame {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px dashed var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  padding: 16px;
+  min-height: 380px;
+}
+
+.camera-standby-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 320px;
+}
+
+.scanner-laser-icon {
+  font-size: 54px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.placeholder-primary-lbl {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.placeholder-secondary-lbl {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+

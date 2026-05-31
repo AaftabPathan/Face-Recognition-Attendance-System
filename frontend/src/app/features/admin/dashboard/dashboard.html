@@ -1,0 +1,152 @@
+<div class="layout-wrapper">
+  <!-- Interactive Sidebar Navigation -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Main View Container -->
+  <main class="main-content">
+    <app-navbar></app-navbar>
+
+    @if (loading()) {
+      <div class="spinner-wrapper">
+        <div class="spinner"></div>
+      </div>
+    } @else {
+      <!-- Core Statistics Cards Grid -->
+      <div class="analytics-grid">
+        <!-- Card 1: Total Registered Students -->
+        <div class="glass-card stat-card border-purple">
+          <div class="stat-header">
+            <span class="stat-icon">👨‍🎓</span>
+            <span class="stat-label">Total Enrolled Students</span>
+          </div>
+          <div class="stat-value">{{ totalStudents() }}</div>
+          <p class="stat-trend trend-up">📈 Biometrically Active</p>
+        </div>
+
+        <!-- Card 2: Total Faculty staff -->
+        <div class="glass-card stat-card border-teal">
+          <div class="stat-header">
+            <span class="stat-icon">👨‍🏫</span>
+            <span class="stat-label">Faculty Staff Members</span>
+          </div>
+          <div class="stat-value">{{ totalFaculty() }}</div>
+          <p class="stat-trend">🏢 Across 3 Main Depts</p>
+        </div>
+
+        <!-- Card 3: Active Classroom sessions today -->
+        <div class="glass-card stat-card border-orange">
+          <div class="stat-header">
+            <span class="stat-icon">🎥</span>
+            <span class="stat-label">Active Scanning Sessions</span>
+          </div>
+          <div class="stat-value">{{ activeSessions() }}</div>
+          <p class="stat-trend {{ activeSessions() > 0 ? 'trend-active' : 'trend-inactive' }}">
+            {{ activeSessions() > 0 ? '● Live Face Scanning' : '○ Standby Mode' }}
+          </p>
+        </div>
+
+        <!-- Card 4: System-wide average Attendance -->
+        <div class="glass-card stat-card border-accent">
+          <div class="stat-header">
+            <span class="stat-icon">📈</span>
+            <span class="stat-label">Average Attendance Rate</span>
+          </div>
+          <div class="stat-value">{{ overallAttendanceRate() }}%</div>
+          <p class="stat-trend trend-up">📊 Target: Above 75%</p>
+        </div>
+      </div>
+
+      <!-- Live Monitoring and Department Ratings Panels Grid -->
+      <div class="dashboard-details-grid">
+        <!-- Left: Live Today logs gauge -->
+        <div class="glass-card details-card">
+          <h3 class="details-title">🔴 Today's Live Attendance</h3>
+          <p class="details-subtitle">Real-time classroom biometrics overview</p>
+          
+          <div class="live-stats-box">
+            <!-- Circular Progress Indicator using custom CSS -->
+            <div class="circular-progress-wrapper">
+              <svg width="160" height="160" viewBox="0 0 160 160">
+                <circle cx="80" cy="80" r="70" class="circle-bg" />
+                <circle cx="80" cy="80" r="70" class="circle-fill" 
+                        [style.strokeDashoffset]="440 - (440 * (todayTotal() > 0 ? (todayPresent() + todayLate()) / todayTotal() : 0.85))" />
+              </svg>
+              <div class="circular-progress-text">
+                <span class="progress-pct">{{ todayTotal() > 0 ? Math.round(((todayPresent() + todayLate()) / todayTotal()) * 100) : 85 }}%</span>
+                <span class="progress-lbl">Present Today</span>
+              </div>
+            </div>
+
+            <!-- Labels list -->
+            <div class="live-legend-list">
+              <div class="legend-item text-green">
+                <span class="legend-dot bg-green"></span>
+                <span class="legend-label">Present:</span>
+                <span class="legend-val">{{ todayPresent() }}</span>
+              </div>
+              <div class="legend-item text-orange">
+                <span class="legend-dot bg-orange"></span>
+                <span class="legend-label">Late Arrived:</span>
+                <span class="legend-val">{{ todayLate() }}</span>
+              </div>
+              <div class="legend-item text-red">
+                <span class="legend-dot bg-red"></span>
+                <span class="legend-label">Absent List:</span>
+                <span class="legend-val">{{ todayAbsent() }}</span>
+              </div>
+              <div class="legend-item text-muted">
+                <span class="legend-dot bg-muted"></span>
+                <span class="legend-label">Total Logs:</span>
+                <span class="legend-val">{{ todayTotal() }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Department Performance comparative metrics (Clean CSS Bar Charting) -->
+        <div class="glass-card details-card">
+          <h3 class="details-title">🏢 Department comparative ratings</h3>
+          <p class="details-subtitle">Average biometric attendance by faculty</p>
+
+          <div class="department-progress-list">
+            @for (dept of departmentStats(); track dept.code) {
+              <div class="dept-progress-item">
+                <div class="dept-info-row">
+                  <span class="dept-name-lbl">{{ dept.department }} ({{ dept.code }})</span>
+                  <span class="dept-pct-lbl">{{ dept.attendanceRate }}%</span>
+                </div>
+                <div class="dept-progress-track">
+                  <div class="dept-progress-bar" [style.width.%]="dept.attendanceRate"></div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Lower panel: Subject Attendance Performance radar/grids -->
+      <div class="glass-card subject-card-container">
+        <h3 class="details-title">📖 Subject Attendance Performance</h3>
+        <p class="details-subtitle">Comprehensive subject percentage sheets</p>
+
+        <div class="subject-rates-grid">
+          @for (sub of subjectStats(); track sub.code) {
+            <div class="subject-stat-pill">
+              <div class="sub-pill-details">
+                <span class="sub-pill-name">{{ sub.subject }}</span>
+                <span class="sub-pill-code">{{ sub.code }}</span>
+              </div>
+              <div class="sub-pill-gauge">
+                <span class="gauge-percentage">{{ sub.attendanceRate }}%</span>
+                <!-- Light customized bar indicators -->
+                <div class="gauge-indicator-track">
+                  <div class="gauge-indicator-fill" [style.width.%]="sub.attendanceRate"></div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </main>
+</div>

@@ -1,0 +1,9 @@
+@import "../../admin/students/students.css";
+
+.student-reason-text {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  max-width: 320px;
+}

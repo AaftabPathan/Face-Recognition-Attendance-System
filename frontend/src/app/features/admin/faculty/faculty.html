@@ -1,0 +1,93 @@
+<div class="layout-wrapper">
+  <app-sidebar></app-sidebar>
+
+  <main class="main-content">
+    <app-navbar></app-navbar>
+
+    <div class="glass-card page-action-header">
+      <div class="header-titles">
+        <h2 class="page-title">👨‍🏫 Faculty Member Registry</h2>
+        <p class="page-subtitle">View, edit, or manage college instructor accounts</p>
+      </div>
+
+      <div class="header-controls">
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="text" 
+            [(ngModel)]="searchQuery" 
+            placeholder="Search by name, employee, or department..." 
+            class="form-input search-box-input">
+        </div>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <div class="spinner-wrapper">
+        <div class="spinner"></div>
+      </div>
+    } @else {
+      <div class="glass-card table-wrapper">
+        @if (filteredFaculty().length === 0) {
+          <div class="no-records-box">
+            <span class="no-records-icon">📭</span>
+            <h3 class="no-records-title">No instructor profiles found</h3>
+            <p class="no-records-subtitle">Adjust your search parameters or add a new faculty user.</p>
+          </div>
+        } @else {
+          <div class="custom-table-container">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Employee ID</th>
+                  <th>Full Name</th>
+                  <th>Email Address</th>
+                  <th>Department</th>
+                  <th>Privilege Status</th>
+                  <th>Purge Privileges</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (faculty of filteredFaculty(); track faculty.id) {
+                  <tr>
+                    <!-- Employee ID -->
+                    <td>
+                      <span class="roll-badge">{{ faculty.employee_id }}</span>
+                    </td>
+
+                    <!-- Name -->
+                    <td>
+                      <span class="student-fullname-val">{{ faculty.first_name }} {{ faculty.last_name }}</span>
+                    </td>
+
+                    <!-- Email -->
+                    <td>
+                      <span class="student-email-val">{{ faculty.email }}</span>
+                    </td>
+
+                    <!-- Department -->
+                    <td>
+                      <span class="dept-text-val">{{ faculty.department_name }}</span>
+                    </td>
+
+                    <!-- Status -->
+                    <td>
+                      <span class="badge badge-present">✓ Active Lecturer</span>
+                    </td>
+
+                    <!-- Actions -->
+                    <td>
+                      <button (click)="deleteFaculty(faculty.id)" class="action-btn icon-del" title="Revoke Privilege">
+                        🗑️
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

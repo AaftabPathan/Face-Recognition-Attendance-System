@@ -1,0 +1,36 @@
+<header class="navbar-container">
+  <div class="welcome-box">
+    @if (authService.currentUser()) {
+      <h1 class="welcome-title">
+        Hello, 
+        @if (authService.currentUser().profile) {
+          {{ authService.currentUser().profile.first_name }}!
+        } @else {
+          {{ authService.currentUser().username }}!
+        }
+      </h1>
+      <p class="welcome-subtitle">Welcome back to your attendance control center.</p>
+    } @else {
+      <h1 class="welcome-title">Vision Attend</h1>
+    }
+  </div>
+
+  <div class="widgets-box">
+    <!-- System Clock -->
+    <div class="clock-widget">
+      <span class="clock-icon">📅</span>
+      <span class="clock-text">{{ currentDateTime() }}</span>
+    </div>
+
+    <!-- Theme Switcher -->
+    <button (click)="toggleTheme()" class="theme-toggle-btn" aria-label="Toggle Theme">
+      @if (isDarkMode()) {
+        <!-- Sun Icon -->
+        <span class="theme-icon">☀️</span>
+      } @else {
+        <!-- Moon Icon -->
+        <span class="theme-icon">🌙</span>
+      }
+    </button>
+  </div>
+</header>

@@ -1,0 +1,144 @@
+<div class="layout-wrapper">
+  <app-sidebar></app-sidebar>
+
+  <main class="main-content">
+    <app-navbar></app-navbar>
+
+    <div class="glass-card page-action-header border-teal">
+      <div class="header-titles">
+        <h2 class="page-title">📋 Historical Attendance Reports</h2>
+        <p class="page-subtitle">Compile, analyze, or export class attendance sheets</p>
+      </div>
+
+      <button (click)="exportToCSV()" [disabled]="reports().length === 0" class="btn-primary">
+        Export Excel / CSV 📊
+      </button>
+    </div>
+
+    <!-- Filters Section Card -->
+    <div class="glass-card filters-grid-card">
+      <div class="filter-controls-layout">
+        <!-- Subject -->
+        <div class="form-group filter-group">
+          <label for="subFilter" class="form-label">Subject</label>
+          <select id="subFilter" [(ngModel)]="filterSubject" class="form-input">
+            <option value="">All Subjects</option>
+            @for (sub of subjects(); track sub.id) {
+              <option [value]="sub.id">{{ sub.name }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Start Date -->
+        <div class="form-group filter-group">
+          <label for="startDate" class="form-label">Start Date</label>
+          <input type="date" id="startDate" [(ngModel)]="filterStartDate" class="form-input">
+        </div>
+
+        <!-- End Date -->
+        <div class="form-group filter-group">
+          <label for="endDate" class="form-label">End Date</label>
+          <input type="date" id="endDate" [(ngModel)]="filterEndDate" class="form-input">
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="filter-actions-row">
+          <button (click)="applyFilters()" class="btn-primary filter-btn">Search 🔍</button>
+          <button (click)="clearFilters()" class="btn-secondary filter-btn">Clear 🔄</button>
+        </div>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <div class="spinner-wrapper">
+        <div class="spinner"></div>
+      </div>
+    } @else {
+      <!-- Results Table -->
+      <div class="glass-card table-wrapper">
+        @if (reports().length === 0) {
+          <div class="no-records-box">
+            <span class="no-records-icon">📭</span>
+            <h3 class="no-records-title">No attendance logs found</h3>
+            <p class="no-records-subtitle">Adjust your filter selections and click Search.</p>
+          </div>
+        } @else {
+          <div class="custom-table-container">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Roll Number</th>
+                  <th>Full Name</th>
+                  <th>Class Subject</th>
+                  <th>Class Date</th>
+                  <th>Arrival Time</th>
+                  <th>AI Score</th>
+                  <th>Verification Method</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (log of reports(); track log.attendance_id) {
+                  <tr>
+                    <!-- Roll -->
+                    <td>
+                      <span class="roll-badge">{{ log.roll_number }}</span>
+                    </td>
+
+                    <!-- Name -->
+                    <td>
+                      <span class="student-fullname-val">{{ log.first_name }} {{ log.last_name }}</span>
+                    </td>
+
+                    <!-- Subject -->
+                    <td>
+                      <div class="student-dept-block">
+                        <span class="dept-text-val">{{ log.subject_name }}</span>
+                        <span class="course-text-val">{{ log.subject_code }}</span>
+                      </div>
+                    </td>
+
+                    <!-- Date -->
+                    <td>
+                      <span class="dept-text-val">{{ log.date.slice(0, 10) }}</span>
+                    </td>
+
+                    <!-- Time -->
+                    <td>
+                      <span class="dept-text-val">🕒 {{ log.start_time }}</span>
+                    </td>
+
+                    <!-- Score -->
+                    <td>
+                      @if (log.verification_score !== null) {
+                        <span class="score-text-pct">
+                          {{ Math.max(0, Math.min(100, Math.round((1 - log.verification_score) * 100))) }}% Match
+                        </span>
+                      } @else {
+                        <span class="text-muted">N/A</span>
+                      }
+                    </td>
+
+                    <!-- Method -->
+                    <td>
+                      <span class="badge {{ log.marked_by === 'face_recognition' ? 'badge-present' : 'badge-late' }}">
+                        {{ log.marked_by }}
+                      </span>
+                    </td>
+
+                    <!-- Status -->
+                    <td>
+                      <span class="badge {{ log.status === 'present' ? 'badge-present' : (log.status === 'late' ? 'badge-late' : 'badge-absent') }}">
+                        {{ log.status }}
+                      </span>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

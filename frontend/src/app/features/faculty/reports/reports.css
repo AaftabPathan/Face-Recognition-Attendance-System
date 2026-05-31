@@ -1,0 +1,35 @@
+@import "../../admin/students/students.css";
+
+.filters-grid-card {
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.filter-controls-layout {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 180px;
+  margin-bottom: 0;
+}
+
+.filter-actions-row {
+  display: flex;
+  gap: 12px;
+}
+
+.filter-btn {
+  height: 42px;
+  min-width: 100px;
+}
+
+.score-text-pct {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--secondary);
+}

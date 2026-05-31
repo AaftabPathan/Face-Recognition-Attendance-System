@@ -1,0 +1,195 @@
+<div class="auth-wrapper">
+  <!-- Glowing Background Orbs (Visual Wow Factor) -->
+  <div class="glow-orb orb-primary"></div>
+  <div class="glow-orb orb-secondary"></div>
+
+  <div class="auth-container glass-card">
+    <!-- Header Section -->
+    <div class="auth-header">
+      <div class="brand-badge">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="currentColor"/>
+        </svg>
+      </div>
+      <h2 class="auth-title">Vision Attend</h2>
+      <p class="auth-subtitle">
+        {{ isLoginMode() ? 'Authenticate to enter your attendance dashboard' : 'Join our smart facial biometric ecosystem' }}
+      </p>
+    </div>
+
+    <!-- Toggle Buttons -->
+    <div class="auth-tabs">
+      <button (click)="isLoginMode.set(true)" [class.active]="isLoginMode()" class="tab-btn">Sign In</button>
+      <button (click)="isLoginMode.set(false)" [class.active]="!isLoginMode()" class="tab-btn">Register</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    @if (isLoginMode()) {
+      <form (submit)="onLogin($event)" class="auth-form" id="loginForm">
+        <div class="form-group">
+          <label for="usernameOrEmail" class="form-label">Username or Email</label>
+          <input 
+            type="text" 
+            id="usernameOrEmail" 
+            name="usernameOrEmail"
+            [(ngModel)]="usernameOrEmail"
+            placeholder="e.g. admin or student@student.edu" 
+            class="form-input" 
+            required>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password"
+            [(ngModel)]="password"
+            placeholder="••••••••••••" 
+            class="form-input" 
+            required>
+        </div>
+
+        <button type="submit" [disabled]="loading()" class="btn-primary auth-submit-btn">
+          @if (loading()) {
+            <span class="spinner-small"></span> Authenticating...
+          } @else {
+            Secure Login 🔑
+          }
+        </button>
+
+        <p class="demo-notice">
+          💡 Try **admin** / **password123** for general manager dashboards.
+        </p>
+      </form>
+    } @else {
+      <!-- REGISTRATION FORM -->
+      <form (submit)="onRegister($event)" class="auth-form scrollable-reg" id="registerForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="regRole" class="form-label">System Role</label>
+            <select id="regRole" name="regRole" [(ngModel)]="regRole" class="form-input">
+              <option value="student">Student</option>
+              <option value="faculty">Faculty Member</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="regUsername" class="form-label">Username</label>
+            <input 
+              type="text" 
+              id="regUsername" 
+              name="regUsername"
+              [(ngModel)]="regUsername"
+              placeholder="e.g. johndoe" 
+              class="form-input" 
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="regEmail" class="form-label">Email Address</label>
+            <input 
+              type="email" 
+              id="regEmail" 
+              name="regEmail"
+              [(ngModel)]="regEmail"
+              placeholder="e.g. john@university.edu" 
+              class="form-input" 
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="regPassword" class="form-label">Password</label>
+            <input 
+              type="password" 
+              id="regPassword" 
+              name="regPassword"
+              [(ngModel)]="regPassword"
+              placeholder="••••••••" 
+              class="form-input" 
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="regFirstName" class="form-label">First Name</label>
+            <input 
+              type="text" 
+              id="regFirstName" 
+              name="regFirstName"
+              [(ngModel)]="regFirstName"
+              placeholder="John" 
+              class="form-input" 
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="regLastName" class="form-label">Last Name</label>
+            <input 
+              type="text" 
+              id="regLastName" 
+              name="regLastName"
+              [(ngModel)]="regLastName"
+              placeholder="Doe" 
+              class="form-input" 
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="regDepartmentId" class="form-label">Department</label>
+            <select id="regDepartmentId" name="regDepartmentId" [(ngModel)]="regDepartmentId" class="form-input" required>
+              <option value="" disabled selected>Select Department</option>
+              @for (dept of departments(); track dept.id) {
+                <option [value]="dept.id">{{ dept.name }} ({{ dept.code }})</option>
+              }
+            </select>
+          </div>
+
+          <!-- Role specific forms rendering -->
+          @if (regRole === 'student') {
+            <div class="form-group">
+              <label for="regCourseId" class="form-label">Course Degree</label>
+              <select id="regCourseId" name="regCourseId" [(ngModel)]="regCourseId" class="form-input" required>
+                <option value="" disabled selected>Select Course</option>
+                @for (c of courses(); track c.id) {
+                  <option [value]="c.id">{{ c.name }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="regRollNumber" class="form-label">Student Roll Number</label>
+              <input 
+                type="text" 
+                id="regRollNumber" 
+                name="regRollNumber"
+                [(ngModel)]="regRollNumber"
+                placeholder="e.g. CSE-2026-045" 
+                class="form-input" 
+                required>
+            </div>
+          } @else {
+            <div class="form-group">
+              <label for="regEmployeeId" class="form-label">Faculty Employee ID</label>
+              <input 
+                type="text" 
+                id="regEmployeeId" 
+                name="regEmployeeId"
+                [(ngModel)]="regEmployeeId"
+                placeholder="e.g. EMP-2026-88" 
+                class="form-input" 
+                required>
+            </div>
+          }
+        </div>
+
+        <button type="submit" [disabled]="loading()" class="btn-primary auth-submit-btn">
+          @if (loading()) {
+            <span class="spinner-small"></span> Creating Profile...
+          } @else {
+            Join Smart Portal 🚀
+          }
+        </button>
+      </form>
+    }
+  </div>
+</div>
