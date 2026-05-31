@@ -112,3 +112,20 @@ Create a MySQL database named `face_attendance_db` and run the schema and seed s
 * **🎯 Final Year College Project:** Features structured MVC layers, relational constraints, visual biometric scanner webcams, and automated mathematical vector distance checking.
 * **💼 Resume Showcase:** Demonstrates proficiency in Angular (v19) standalone component architectures, functional interceptors/guards, asynchronous MySQL pool queries, and full-stack API integration.
 * **🎨 Modern UI/UX Portfolio:** Uses curated HSL tailored colors, glassy overlays, scanning laser glows, circular metrics, and responsive sidebar menus.
+
+
+
+## 👨‍💻 Author
+
+**Aaftab Pathan**
+
+* GitHub: https://github.com/AaftabPathan
+* LinkedIn: https://linkedin.com/in/aaftabpathan
+* Gmail: aaftabaayubpathan@gmail.com
+
+---
+
+## ⭐ Support 
+
+If you like this project, give it a ⭐ on GitHub!
+
